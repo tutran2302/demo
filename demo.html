@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="dist/leaflet.css"/>
+    <link rel="stylesheet" href="dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="dist/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="dist/customPopup.css?3"/>
+    <link rel="stylesheet" href="dist/style.css?3"></head>
+    <script type="text/javascript" src="dist/leaflet.js "></script>
+    <script type="text/javascript" src="dist/leaflet-rotatedmarker.js"></script>
+    <script type="text/javascript" src="dist/leaflet.markercluster-src.js"></script>
+    <script type="text/javascript" src="dist/createTable.js"></script>
+    <script type="text/javascript" src="dist/runningMarker.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+    #container{
+        width: 100%;
+        height: 100%;
+    }
+    #map {
+    width: 100%;
+    height: 100%;
+    float:left;
+    }
+
+
+    body, html {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    }
+    </style>
+</head>
+<body>
+<div  class='custom-popup' id="map" >
+    <button type="button" onclick=btClick() style="position:absolute;margin:10px 0px 0px 50px;top:0;left:0;z-index: 9999">Load</button>
+<div class='markerslist-panel' id="markersList"></div>
+</div>
+<script>
+ /*  var myIcon = L.divIcon({
+       className:'',
+       html:'<i class='+"'icon-icomoon'"+'>', //'style='+'"color:blue";//
+       iconAnchor: [6, 7]
+    });
+*/
+    var parkIcon =L.icon({
+       iconUrl: 'leaflet/images/icon_park.png',
+        iconSize:[26,36],
+        iconAnchor: [10, 35],
+        popupAnchor: [0, -20]
+    });
+    var carIcon = L.icon({
+        iconUrl: 'leaflet/images/car_1.png',
+        iconSize:[50,39],
+        iconAchor:[20,20],
+        popupAnchor:[0,0]
+        });
+    var map = L.map('map', {
+        center: [10.983228, 106.58387],
+        zoom: 13,
+        maxZoom:20
+    });
+    var Tile=L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 0,
+        maxZoom: 17,
+        attribution: '&copy;<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    var myRenderer = L.canvas({ padding: 0.5 });
+    var latlngs=[];
+    var markersList=[];
+    var polyline = L.polyline([], {
+        color:'deepskyblue',
+        opacity: 0.7,
+        weight:3,
+        renderer: myRenderer,
+        smoothFactor:1,
+        stroke:true}).addTo(map);
+    var direction = L.markerClusterGroup({
+        spiderfyOnMaxZoom: false,
+        maxClusterRadius:80,
+        disableClusteringAtZoom:17,
+        removeOutsideVisibleBounds: true,
+        showCoverageOnHover: false,
+        chunkLoading: true,
+        chunkSize: 500,
+        iconCreateFunction: function (cluster) {
+            var marker=cluster.getAllChildMarkers();
+            var count = cluster.getChildCount();
+            var num =Math.floor(Math.random()*count);
+            var classname=marker[num].options.icon.options.className;
+            cluster.setRotationAngle(marker[num].properties.carHeading);
+            return L.divIcon({
+                className:classname,
+                html:'<i class="icon-icomoon">', //'style='+'"color:blue";//
+                iconAnchor: [6, 7]
+            });
+        }
+    });
+
+        var stopMark = L.markerClusterGroup({
+        disableClusteringAtZoom:14,
+        removeOutsideVisibleBounds: true,
+        showCoverageOnHover: false,
+        chunkLoading: true,
+        chunkSize: 500,
+            spiderfyOnMaxZoom: false,
+        iconCreateFunction:function () {
+            return L.icon({
+                iconUrl: 'leaflet/images/icon_park.png',
+                iconSize:[26,37],
+                iconAnchor: [0, 35],
+                popupAnchor: [0, 0]
+            });
+        }
+    });
+        var startMark = L.markerClusterGroup({
+        disableClusteringAtZoom:16,
+        removeOutsideVisibleBounds: true,
+        showCoverageOnHover: false,
+        chunkLoading: true,
+        chunkSize: 500
+    });
+    var b=[];
+    b[0]="09";
+    b[1]="10";
+    b[2]="11";
+    b[3]="12";
+    b[4]="13";
+    b[5]="14";
+    b[6]="15";
+    var a=[];
+    a[0]="pink";
+    a[1]="deepskyblue";
+    a[2]="orangered";
+    a[3]="violet";
+    a[4]="lightgreen";
+    a[5]="blueviolet";
+    a[6]="cornflower";
+    count=0;
+    console.log(myAdd(1,2));
+ function btClick() {
+        if (count==0){
+            load();
+        }
+        if (count==1){
+            run(markersList.length);
+
+        }
+        if(count==2){
+            stoploop();
+            //count=1;
+        }
+        if(count==3){
+            stoploop();
+            map.removeLayer(marker);
+            map.removeLayer(markEnd);
+            setTimeout(run(markersList.length),100);
+            count=1;
+        }
+        count++;
+    }
+    var markEnd=L.marker();
+    var marker=L.marker();
+ function drawLine(latlngs){
+     polyline.setLatLngs(latlngs);
+     map.fitBounds(polyline.getBounds());
+ }
+ function  load() {
+        var cname=0;
+    for (var j=6;j>=0;j--) {
+        (function(j){
+            $.getJSON('leaflet/json/1801' + b[j] + '-1666094292.geojson').then(function (data) {
+                var length=data.length;
+                for (var i=length; i--;) {
+                if(i%500==0){
+                    if (cname==6)cname=0;
+                    else cname++
+                }
+                var m = L.marker([data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]],{
+                    icon:L.divIcon({
+                        className:a[cname],
+                        html:'<i class='+"'icon-icomoon'"+'>', //'style='+'"color:blue";//
+                        iconAnchor: [6, 7]
+                    }),
+                    rotationOrigin:'center center'});
+                m.properties={};
+                m.properties=data[i].properties;
+                m.bindPopup(CreateTableFromJSON(data[i]));
+                m.properties.delay=0;
+                m.properties.type="";
+                if(i%5==0){
+                    m.properties.type="direction";
+                    m.setRotationAngle(m.properties.carHeading);
+                }
+                if(i%500==0){
+                    m.setRotationAngle(0);
+                    m.properties.delay=1000;
+                    m.properties.type="stop";
+                    m.setIcon(parkIcon);
+                }
+                if(m.properties.type=="direction")direction.addLayer(m);
+                else if(m.properties.type=="stop")stopMark.addLayer(m);
+                markersList.push(m);
+                latlngs.push(m.getLatLng());
+            }
+            if(j==0){
+                drawLine(latlngs);
+                stopMark.addTo(map);
+                direction.addTo(map);
+            }
+        });
+    })(j)}
+    }
+    
+</script>
+</body>
+</html>
