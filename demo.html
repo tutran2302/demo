@@ -109,7 +109,7 @@
             spiderfyOnMaxZoom: false,
         iconCreateFunction:function () {
             return L.icon({
-                iconUrl: 'leaflet/images/icon_park.png',
+                iconUrl: 'icon/icon_park.png',
                 iconSize:[26,37],
                 iconAnchor: [0, 35],
                 popupAnchor: [0, 0]
@@ -171,7 +171,7 @@
         var cname=0;
     for (var j=6;j>=0;j--) {
         (function(j){
-            $.getJSON('leaflet/json/1801' + b[j] + '-1666094292.geojson').then(function (data) {
+            $.getJSON('data/1801' + b[j] + '-1666094292.geojson').then(function (data) {
                 var length=data.length;
                 for (var i=length; i--;) {
                 if(i%500==0){
