@@ -1,8 +1,8 @@
 var interval;
 function run(a) {
     length=a;
-    var marker = L.marker(markersList[length-1].getLatLng(), {icon: carIcon}).setRotationOrigin('center center').bindPopup(markersList[0]._popup._content).openPopup().addTo(map);
-    var markEnd = L.marker(markersList[0].getLatLng(), {icon: carIcon}).setRotationOrigin('center center').bindPopup(markersList[0]._popup._content).addTo(map);
+    marker = L.marker(markersList[length-1].getLatLng(), {icon: carIcon}).setRotationOrigin('center center').bindPopup(markersList[0]._popup._content).openPopup().addTo(map);
+    markEnd = L.marker(markersList[0].getLatLng(), {icon: carIcon}).setRotationOrigin('center center').bindPopup(markersList[0]._popup._content).addTo(map);
     var delay = 10;
     var j = length-2;
     interval = setInterval(jump, delay);
