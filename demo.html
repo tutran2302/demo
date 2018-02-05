@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
 
-    <link rel="stylesheet" href="leaflet/css/leaflet.css"/>
-    <link rel="stylesheet" href="leaflet/css/MarkerCluster.css"/>
-    <link rel="stylesheet" href="leaflet/css/MarkerCluster.Default.css"/>
-    <link rel="stylesheet" href="leaflet/css/customPopup.css?3"/>
-    <link rel="stylesheet" href="leaflet/css/style.css?3"></head>
-    <script type="text/javascript" src="leaflet/js/leaflet.js "></script>
-    <script type="text/javascript" src="leaflet/js/leaflet-rotatedmarker.js"></script>
-    <script type="text/javascript" src="leaflet/js/leaflet.markercluster-src.js"></script>
-    <script type="text/javascript" src="leaflet/js/createTable.js"></script>
-    <script type="text/javascript" src="leaflet/js/animateMarker.js"></script>
-<script type="text/tsx" src="leaflet/ts/test.ts"></script>
+    <link rel="stylesheet" href="dist/leaflet.css"/>
+    <link rel="stylesheet" href="dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="dist/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="dist/customPopup.css?3"/>
+    <link rel="stylesheet" href="dist/style.css?3"></head>
+    <script type="text/javascript" src="dist/leaflet.js "></script>
+    <script type="text/javascript" src="dist/leaflet-rotatedmarker.js"></script>
+    <script type="text/javascript" src="dist/leaflet.markercluster-src.js"></script>
+    <script type="text/javascript" src="dist/createTable.js"></script>
+    <script type="text/javascript" src="dist/animateMarker.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -48,13 +47,13 @@
     });
 */
     var parkIcon =L.icon({
-       iconUrl: 'leaflet/images/icon_park.png',
+       iconUrl: 'icon/icon_park.png',
         iconSize:[26,36],
         iconAnchor: [10, 35],
         popupAnchor: [0, -20]
     });
     var carIcon = L.icon({
-        iconUrl: 'leaflet/images/car_1.png',
+        iconUrl: 'icon/car_1.png',
         iconSize:[50,39],
         iconAchor:[20,20],
         popupAnchor:[0,0]
@@ -110,7 +109,7 @@
             spiderfyOnMaxZoom: false,
         iconCreateFunction:function () {
             return L.icon({
-                iconUrl: 'leaflet/images/icon_park.png',
+                iconUrl: 'icon/icon_park.png',
                 iconSize:[26,37],
                 iconAnchor: [0, 35],
                 popupAnchor: [0, 0]
