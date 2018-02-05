@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
 
-    <link rel="stylesheet" href="dist/leaflet.css"/>
-    <link rel="stylesheet" href="dist/MarkerCluster.css"/>
-    <link rel="stylesheet" href="dist/MarkerCluster.Default.css"/>
-    <link rel="stylesheet" href="dist/customPopup.css?3"/>
-    <link rel="stylesheet" href="dist/style.css?3"></head>
-    <script type="text/javascript" src="dist/leaflet.js "></script>
-    <script type="text/javascript" src="dist/leaflet-rotatedmarker.js"></script>
-    <script type="text/javascript" src="dist/leaflet.markercluster-src.js"></script>
-    <script type="text/javascript" src="dist/createTable.js"></script>
-    <script type="text/javascript" src="dist/runningMarker.js"></script>
+    <link rel="stylesheet" href="leaflet/css/leaflet.css"/>
+    <link rel="stylesheet" href="leaflet/css/MarkerCluster.css"/>
+    <link rel="stylesheet" href="leaflet/css/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="leaflet/css/customPopup.css?3"/>
+    <link rel="stylesheet" href="leaflet/css/style.css?3"></head>
+    <script type="text/javascript" src="leaflet/js/leaflet.js "></script>
+    <script type="text/javascript" src="leaflet/js/leaflet-rotatedmarker.js"></script>
+    <script type="text/javascript" src="leaflet/js/leaflet.markercluster-src.js"></script>
+    <script type="text/javascript" src="leaflet/js/createTable.js"></script>
+    <script type="text/javascript" src="leaflet/js/animateMarker.js"></script>
+<script type="text/tsx" src="leaflet/ts/test.ts"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -47,13 +48,13 @@
     });
 */
     var parkIcon =L.icon({
-       iconUrl: 'icon/icon_park.png',
+       iconUrl: 'leaflet/images/icon_park.png',
         iconSize:[26,36],
         iconAnchor: [10, 35],
         popupAnchor: [0, -20]
     });
     var carIcon = L.icon({
-        iconUrl: 'icon/car_1.png',
+        iconUrl: 'leaflet/images/car_1.png',
         iconSize:[50,39],
         iconAchor:[20,20],
         popupAnchor:[0,0]
@@ -80,7 +81,7 @@
         stroke:true}).addTo(map);
     var direction = L.markerClusterGroup({
         spiderfyOnMaxZoom: false,
-        maxClusterRadius:80,
+        maxClusterRadius:60,
         disableClusteringAtZoom:17,
         removeOutsideVisibleBounds: true,
         showCoverageOnHover: false,
@@ -98,7 +99,7 @@
                 iconAnchor: [6, 7]
             });
         }
-    });
+    }).addTo(map);
 
         var stopMark = L.markerClusterGroup({
         disableClusteringAtZoom:14,
@@ -109,13 +110,13 @@
             spiderfyOnMaxZoom: false,
         iconCreateFunction:function () {
             return L.icon({
-                iconUrl: 'icon/icon_park.png',
+                iconUrl: 'leaflet/images/icon_park.png',
                 iconSize:[26,37],
                 iconAnchor: [0, 35],
                 popupAnchor: [0, 0]
             });
         }
-    });
+    }).addTo(map);
         var startMark = L.markerClusterGroup({
         disableClusteringAtZoom:16,
         removeOutsideVisibleBounds: true,
@@ -140,6 +141,7 @@
     a[5]="blueviolet";
     a[6]="cornflower";
     count=0;
+
  function btClick() {
         if (count==0){
             load();
@@ -149,11 +151,11 @@
 
         }
         if(count==2){
-            stoploop();
+            markerstate=state[1];
             //count=1;
         }
         if(count==3){
-            stoploop();
+            markerstate=state[1];
             map.removeLayer(marker);
             map.removeLayer(markEnd);
             setTimeout(run(markersList.length),100);
@@ -167,16 +169,19 @@
      polyline.setLatLngs(latlngs);
      map.fitBounds(polyline.getBounds());
  }
+ $( document ).ready(function() {
+     load();
+ });
  function  load() {
         var cname=0;
-    for (var j=0;j>=0;j--) {
+    for (var j=6;j>=0;j--) {
         (function(j){
-            $.getJSON('data/1801' + b[j] + '-1666094292.geojson').then(function (data) {
+            $.getJSON('leaflet/json/1801' + b[j] + '-1666094292.geojson').then(function (data) {
                 var length=data.length;
                 for (var i=length; i--;) {
-                if(i%500==0){
-                    if (cname==6)cname=0;
-                    else cname++
+                if(i%500===0){
+                    cname++;
+                    if (cname===7)cname=0;
                 }
                 var m = L.marker([data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]],{
                     icon:L.divIcon({
@@ -190,30 +195,27 @@
                 m.bindPopup(CreateTableFromJSON(data[i]));
                 m.properties.delay=0;
                 m.properties.type="";
-                if(i%5==0){
+                if(i%5===0){
                     m.properties.type="direction";
                     m.setRotationAngle(m.properties.carHeading);
                 }
-                if(i%500==0){
+                if(i%500===0){
                     m.setRotationAngle(0);
                     m.properties.delay=1000;
                     m.properties.type="stop";
                     m.setIcon(parkIcon);
                 }
-                if(m.properties.type=="direction")direction.addLayer(m);
-                else if(m.properties.type=="stop")stopMark.addLayer(m);
+                if(m.properties.type==="direction")direction.addLayer(m);
+                else if(m.properties.type==="stop")stopMark.addLayer(m);
                 markersList.push(m);
                 latlngs.push(m.getLatLng());
             }
-            if(j==0){
+            if(j===0){
                 drawLine(latlngs);
-                stopMark.addTo(map);
-                direction.addTo(map);
             }
         });
     })(j)}
     }
-    
 </script>
 </body>
 </html>
