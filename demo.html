@@ -143,22 +143,19 @@
 
  function btClick() {
         if (count==0){
-            load();
-        }
-        if (count==1){
             run(markersList.length);
 
         }
-        if(count==2){
+        if(count==1){
             markerstate=state[1];
             //count=1;
         }
-        if(count==3){
+        if(count==2){
             markerstate=state[1];
             map.removeLayer(marker);
             map.removeLayer(markEnd);
             setTimeout(run(markersList.length),100);
-            count=1;
+            count=0;
         }
         count++;
     }
