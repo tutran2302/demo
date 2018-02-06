@@ -163,7 +163,7 @@ $(document).ready(function(){
         var cname = 0;
         function getdata(n) {
             return new Promise((resolve) => {
-                $.getJSON('leaflet/json/1801' + b[n] + '-1666094292.geojson').then(function (data) {
+                $.getJSON('data/1801' + b[n] + '-1666094292.geojson').then(function (data) {
                     var datalist = [];
                     datalist[0] = [];
                     datalist[1] = [];
