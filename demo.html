@@ -139,79 +139,75 @@
     a[4]="lightgreen";
     a[5]="blueviolet";
     a[6]="cornflower";
-    count=0;
-
- function btClick() {
-        if (count==0){
-            run(markersList.length);
-
-        }
-        if(count==1){
-            markerstate=state[1];
-            //count=1;
-        }
-        if(count==2){
-            markerstate=state[1];
-            map.removeLayer(marker);
-            map.removeLayer(markEnd);
-            setTimeout(run(markersList.length),100);
-            count=0;
-        }
-        count++;
+$(document).ready(function(){
+    load();
+    });
+    var count =0;
+    function drawLine(latlngs){
+        polyline.setLatLngs(latlngs);
+        map.fitBounds(polyline.getBounds());
     }
-    var markEnd=L.marker();
-    var marker=L.marker();
- function drawLine(latlngs){
-     polyline.setLatLngs(latlngs);
-     map.fitBounds(polyline.getBounds());
- }
- $( document ).ready(function() {
-     load();
- });
- function  load() {
-        var cname=0;
-    for (var j=6;j>=0;j--) {
-        (function(j){
-            $.getJSON('data/1801' + b[j] + '-1666094292.geojson').then(function (data) {
-                var length=data.length;
-                for (var i=length; i--;) {
-                if(i%500===0){
-                    cname++;
-                    if (cname===7)cname=0;
-                }
-                var m = L.marker([data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]],{
-                    icon:L.divIcon({
-                        className:a[cname],
-                        html:'<i class='+"'icon-icomoon'"+'>', //'style='+'"color:blue";//
-                        iconAnchor: [6, 7]
-                    }),
-                    rotationOrigin:'center center'});
-                m.properties={};
-                m.properties=data[i].properties;
-                m.bindPopup(CreateTableFromJSON(data[i]));
-                m.properties.delay=0;
-                m.properties.type="";
-                if(i%5===0){
-                    m.properties.type="direction";
-                    m.setRotationAngle(m.properties.carHeading);
-                }
-                if(i%500===0){
-                    m.setRotationAngle(0);
-                    m.properties.delay=1000;
-                    m.properties.type="stop";
-                    m.setIcon(parkIcon);
-                }
-                if(m.properties.type==="direction")direction.addLayer(m);
-                else if(m.properties.type==="stop")stopMark.addLayer(m);
-                markersList.push(m);
-                latlngs.push(m.getLatLng());
+    function btClick() {
+        switch(count){
+            //case 3:load();count=0;break;
+            case 0: run(markersList);count=1;break;
+            case 1: markerstate=state[1];count=2;break;
+            case 2:if(markerstate===state[1]){
+                map.removeLayer(marker);
+                map.removeLayer(markEnd);
+                count=0;
+            }else count=1;
+                break;
+        }}
+    function  load() {
+        var cname = 0;
+        function getdata(n) {
+            return new Promise((resolve) => {
+                $.getJSON('leaflet/json/1801' + b[n] + '-1666094292.geojson').then(function (data) {
+                    var datalist = [];
+                    datalist[0] = [];
+                    datalist[1] = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var m = L.marker([data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]], {
+                            icon: a[cname],
+                            rotationOrigin: 'center center'
+                        });
+                        m.properties = {};
+                        m.properties = data[i].properties;
+                        m.bindPopup(CreateTableFromJSON(data[i]));
+                        m.properties.delay = 0;
+                        m.properties.type = "";
+                        if (i % 5 === 0) {
+                            m.properties.type = "direction";
+                            m.setRotationAngle(m.properties.carHeading);
+                            datalist[0].push(m.getLatLng());
+                            direction.addLayer(m)
+                        }
+                        if (i % 500 === 0) {
+                            m.setRotationAngle(0);
+                            m.properties.delay = 1000;
+                            m.properties.type = "stop";
+                            m.setIcon(parkIcon);
+                            direction.removeLayer(m);
+                            stopMark.addLayer(m);
+                            cname++;
+                            if (cname === 7) cname = 0;
+                        }
+                        datalist[1].push(m);
+                    }
+                    resolve(datalist);
+                })})}
+        var promises = [];
+        for (var n = 7; n--;) {
+            promises.push(getdata(n))
+        }
+        Promise.all(promises).then((data) => {
+            for (var j = 7; j--;) {
+                markersList=markersList.concat(data[j][1]);
+                latlngs=latlngs.concat(data[j][0]);
             }
-            if(j===0){
-                drawLine(latlngs);
-            }
-        });
-    })(j)}
-    }
+            drawLine(latlngs);
+        })}
 </script>
 </body>
 </html>
