@@ -8,7 +8,7 @@ var animateIcon = L.icon({
 var state=["run","stop"],animateState=state[0],myreg;
 function run(markersList,speed){
     marker = L.marker(markersList[0].getLatLng(), {icon: animateIcon}).setRotationOrigin('center center').bindPopup(markersList[0]._popup._content).addTo(map).openPopup();
-    markEnd = L.marker(markersList[markersList.length-1].getLatLng(), {icon: animateIcon}).setRotationOrigin('center center').bindPopup(markersList[0]._popup._content).addTo(map);
+    markEnd = L.marker(markersList[markersList.length-1].getLatLng(), {icon: animateIcon}).setRotationAngle(markersList[markersList.length-1].properties.carHeading).setRotationOrigin('center center').bindPopup(markersList[0]._popup._content).addTo(map);
     var length = markersList.length-1;
     var j=0;
     animateState=state[0];
