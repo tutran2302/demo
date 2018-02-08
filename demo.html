@@ -178,9 +178,9 @@ $(document).ready(function(){
     function btClick() {
         switch(count){
             //case 3:load();count=0;break;
-            case 0: run(markersList);count=1;break;
-            case 1: markerstate=state[1];count=2;break;
-            case 2:if(markerstate===state[1]){
+            case 0: run(markersList,250);count=1;break;
+            case 1: animateState=state[1];count=2;break;
+            case 2:if(animateState===state[1]){
                 map.removeLayer(marker);
                 map.removeLayer(markEnd);
                 count=0;
