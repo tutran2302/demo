@@ -226,11 +226,11 @@ $(document).ready(function(){
                     resolve(datalist);
                 })})}
         var promises = [];
-        for (var n = 7; n--;) {
+        for (var n = 2; n--;) {
             promises.push(getdata(n))
         }
         Promise.all(promises).then((data) => {
-            for (var j = 7; j--;) {
+            for (var j = 2; j--;) {
                 markersList=markersList.concat(data[j][1]);
                 latlngs=latlngs.concat(data[j][0]);
             }
