@@ -25,6 +25,7 @@
 }
 
 .icon-icomoon:before {
+  margin:-3px;
   font-size:20px;
   content: "\e600";
 }
